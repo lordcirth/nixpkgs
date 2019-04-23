@@ -6,6 +6,7 @@
 , babeltrace, gperf
 , cunit, snappy
 , rocksdb, makeWrapper
+, oathToolkit, rabbitmq-c
 
 # Optional Dependencies
 , yasm ? null, fcgi ? null, expat ? null
@@ -100,13 +101,6 @@ stdenv.mkDerivation {
 
   inherit src;
 
-  patches = [
- #   ./ceph-patch-cmake-path.patch
-    ./0001-kv-RocksDBStore-API-break-additional.patch
-  ] ++ optionals stdenv.isLinux [
-    ./0002-fix-absolute-include-path.patch
-  ];
-
   nativeBuildInputs = [
     cmake
     pkgconfig which git python2Packages.wrapPython makeWrapper
@@ -116,7 +110,7 @@ stdenv.mkDerivation {
   buildInputs = buildInputs ++ cryptoLibsMap.${cryptoStr} ++ [
     boost ceph-python-env libxml2 optYasm optLibatomic_ops optLibs3
     malloc zlib openldap lttng-ust babeltrace gperf cunit
-    snappy rocksdb
+    snappy rocksdb oathToolkit rabbitmq-c
   ] ++ optionals stdenv.isLinux [
     linuxHeaders libuuid udev keyutils optLibaio optLibxfs optZfs
   ] ++ optionals hasRadosgw [
@@ -150,6 +144,14 @@ stdenv.mkDerivation {
     # disable cephfs, cmake build broken for now
     "-DWITH_CEPHFS=OFF"
     "-DWITH_LIBCEPHFS=OFF"
+
+    # Strip down to minimal build for now, until it builds
+    # Requires libibverbs
+    "-DWITH_RDMA=OFF"
+    "-DWITH_LZ4=OFF"
+    # Requires oath?
+    "-DWITH_RADOGW=OFF"
+    "-DWITH_MGR_DASHBOARD_FRONTEND=OFF"
   ];
 
   postFixup = ''
