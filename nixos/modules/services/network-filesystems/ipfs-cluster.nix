@@ -18,6 +18,8 @@ let
   '';
 
   commonEnv = {
+    environment.IPFS_CLUSTER_PATH = cfg.dataDir;
+    path = [ wrapped ];
     serviceConfig.User = cfg.user;
     serviceConfig.Group = cfg.group;
   };
@@ -83,6 +85,19 @@ in {
     ];
 
     systemd.services.ipfs-cluster-init = recursiveUpdate commonEnv {
+      description = "IPFS Cluster Initializer";
+      before = [ "ipfs-cluster.service" ];
+
+      script = ''
+        if [[ ! -f ${cfg.dataDir}/config ]]; then
+          ipfs-cluster-service init
+        fi
+      '';
+
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+      };
     };
 
     systemd.services.ipfs-cluster = recursiveUpdate baseService {
