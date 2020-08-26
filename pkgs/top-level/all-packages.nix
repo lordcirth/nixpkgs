@@ -4629,6 +4629,8 @@ in
 
   john = callPackage ../tools/security/john { };
 
+  johnny = callPackage ../tools/security/johnny { };
+
   joplin = nodePackages.joplin;
 
   joplin-desktop = callPackage ../applications/misc/joplin-desktop { };
