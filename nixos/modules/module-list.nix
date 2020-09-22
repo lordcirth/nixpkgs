@@ -511,6 +511,7 @@
   ./services/misc/tzupdate.nix
   ./services/misc/uhub.nix
   ./services/misc/weechat.nix
+  ./services/misc/xboxdrv.nix
   ./services/misc/xmr-stak.nix
   ./services/misc/zigbee2mqtt.nix
   ./services/misc/zoneminder.nix
